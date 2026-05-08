@@ -100,29 +100,29 @@
         
         <a-assets>
             <!-- 
-              Para esta demostración, usamos una imagen del logo del IPN alojada de forma pública.
-              En un entorno de producción, asegúrate de tener los derechos o que sea de uso libre.
+              Aquí cargamos el modelo 3D GLB.
+              IMPORTANTE: Cambia esta URL por el enlace RAW de tu archivo GLB en GitHub
+              o la URL de tu modelo si usas GitHub Pages.
             -->
-            <img id="logo-ipn" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Logo_Instituto_Polit%C3%A9cnico_Nacional.png/600px-Logo_Instituto_Polit%C3%A9cnico_Nacional.png" crossorigin="anonymous">
+            <a-asset-item id="logo-ipn-3d" src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb"></a-asset-item>
         </a-assets>
 
         <!-- 
           Usaremos una entidad que esté fija en relación a la cámara, pero posicionada 'lejos' y 'arriba',
           simulando que está en el cielo. 
-          No usaremos un marcador físico para que sea más fácil ver la proyección en cualquier lugar.
         -->
         <a-entity id="logo-container" position="0 5 -10">
+            
             <!-- 
-              El plano que mostrará la imagen.
-              Material: transparent a true para que el PNG sin fondo se vea bien.
+              Reemplazamos <a-image> por <a-gltf-model> para cargar el modelo 3D.
+              Ajusta 'scale' dependiendo de qué tan grande o pequeño se vea tu modelo original.
             -->
-            <a-image 
-                src="#logo-ipn" 
+            <a-gltf-model 
+                src="#logo-ipn-3d" 
                 position="0 0 0" 
-                scale="4 4 4" 
-                material="transparent: true; alphaTest: 0.5"
+                scale="2 2 2" 
                 animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
-            </a-image>
+            </a-gltf-model>
             
             <!-- Agregamos un ligero texto flotante debajo del logo -->
             <a-text 
