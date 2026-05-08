@@ -1,49 +1,176 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>IPN AR - Aniversario en el Cielo</title>
-    <!-- Cargamos A-Frame -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <!-- Cargamos AR.js para la funcionalidad de Realidad Aumentada -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Logo IPN en Realidad Aumentada</title>
+    <!-- Incluimos A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <!-- Incluimos AR.js específico para A-Frame (versión para marcadores y ubicación) -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-  </head>
+    <!-- Incluimos un script para manejar eventos táctiles si es necesario en el futuro -->
+    <script src="https://raw.githack.com/fcor/arjs-gestures/master/dist/gestures.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #ui-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 100;
+            pointer-events: none; /* Permite que los clics pasen a la escena AR */
+        }
+        .instruction {
+            background-color: rgba(108, 28, 59, 0.8); /* Guinda IPN aproximado */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            pointer-events: auto; /* Permite interactuar con la instrucción si fuera necesario */
+            border: 2px solid white;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #6c1c3b; /* Color guinda */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
 
-  <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-      
-      <!-- ASSETS: Aquí puedes meter tus ilustraciones o modelos 3D -->
-      <a-assets>
-        <!-- Ejemplo: Un logo o engrane en PNG con transparencia -->
-        <img id="escudoIPN" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Escudo_del_Instituto_Polit%C3%A9cnico_Nacional.png">
-      </a-assets>
+<body style="margin: 0px; overflow: hidden;">
 
-      <!-- ELEMENTOS EN EL CIELO -->
-      <!-- Usamos posiciones en 'y' elevadas (ej. 10 o 20) para que estén arriba -->
-      
-      <!-- Engrane rotando en el cenit -->
-      <a-image 
-        src="#escudoIPN" 
-        position="0 15 -10" 
-        rotation="-90 0 0" 
-        scale="5 5 5"
-        animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
-      </a-image>
+    <!-- Pantalla de carga inicial -->
+    <div id="loading" class="loading-screen">
+        <div class="spinner"></div>
+        <h2>Iniciando Cámara AR...</h2>
+        <p>Por favor permite el acceso a la cámara.</p>
+    </div>
 
-      <!-- Texto conmemorativo flotando -->
-      <a-entity
-        text="value: 90 ANIVERSARIO IPN; align: center; color: #660033; width: 20"
-        position="0 10 -15"
-        rotation="-45 0 0">
-      </a-entity>
+    <!-- Contenedor para instrucciones en pantalla -->
+    <div id="ui-container">
+        <div class="instruction">
+            Apunte la cámara hacia el cielo para ver el logo del IPN.
+            <br><small>(Funciona sin marcador, posicionado frente a ti)</small>
+        </div>
+    </div>
 
-      <!-- Partículas o "estrellas" para dar ambiente -->
-      <a-sphere position="5 20 -5" radius="0.2" color="gold" animation="property: opacity; from: 1; to: 0; dir: alternate; loop: true"></a-sphere>
-      <a-sphere position="-8 18 -10" radius="0.3" color="white"></a-sphere>
-      <a-sphere position="2 25 5" radius="0.2" color="gold"></a-sphere>
+    <!-- 
+      Configuración de la escena A-Frame para AR.js:
+      - embedded: Permite superponer elementos de la UI HTML.
+      - arjs: Configuración principal, usamos trackingDevice y debugUIEnabled a false para limpieza.
+      - renderer: Configuraciones para mejorar la visualización de colores y logaritmos de profundidad.
+    -->
+    <a-scene 
+        embedded 
+        arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;" 
+        renderer="logarithmicDepthBuffer: true;"
+        vr-mode-ui="enabled: false">
+        
+        <a-assets>
+            <!-- 
+              Para esta demostración, usamos una imagen del logo del IPN alojada de forma pública.
+              En un entorno de producción, asegúrate de tener los derechos o que sea de uso libre.
+            -->
+            <img id="logo-ipn" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Logo_Instituto_Polit%C3%A9cnico_Nacional.png/600px-Logo_Instituto_Polit%C3%A9cnico_Nacional.png" crossorigin="anonymous">
+        </a-assets>
 
-      <!-- Cámara del dispositivo -->
-      <a-entity camera></a-entity>
-      
+        <!-- 
+          Usaremos una entidad que esté fija en relación a la cámara, pero posicionada 'lejos' y 'arriba',
+          simulando que está en el cielo. 
+          No usaremos un marcador físico para que sea más fácil ver la proyección en cualquier lugar.
+        -->
+        <a-entity id="logo-container" position="0 5 -10">
+            <!-- 
+              El plano que mostrará la imagen.
+              Material: transparent a true para que el PNG sin fondo se vea bien.
+            -->
+            <a-image 
+                src="#logo-ipn" 
+                position="0 0 0" 
+                scale="4 4 4" 
+                material="transparent: true; alphaTest: 0.5"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
+            </a-image>
+            
+            <!-- Agregamos un ligero texto flotante debajo del logo -->
+            <a-text 
+                value="¡HUELUM!" 
+                position="0 -2.5 0" 
+                align="center" 
+                color="#6c1c3b" 
+                scale="1.5 1.5 1.5"
+                font="https://cdn.aframe.io/fonts/mozillavr.fnt"
+                animation="property: position; dir: alternate; dur: 2000; easing: easeInOutSine; loop: true; to: 0 -2.2 0">
+            </a-text>
+        </a-entity>
+
+        <!-- 
+          La cámara necesita un look-controls para poder mover el dispositivo y ver alrededor.
+          La entidad del logo está hija de la escena, no de la cámara, por lo que se quedará
+          'quieta' en el mundo virtual donde inició la app, pero al estar 'alta', si apuntas al cielo la verás.
+        -->
+        <a-entity camera look-controls></a-entity>
+
     </a-scene>
-  </body>
+
+    <script>
+        // Ocultar la pantalla de carga una vez que A-Frame esté listo
+        document.querySelector('a-scene').addEventListener('loaded', function () {
+            const loadingScreen = document.getElementById('loading');
+            
+            // Le damos un pequeño retraso para asegurar que el feed de la cámara comience a procesarse
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500); // Esperar a que termine la transición CSS
+            }, 1000);
+            
+            console.log("Escena AR cargada. ¡Apunta al cielo!");
+        });
+        
+        // Manejo de errores básicos (por ejemplo, si se deniega la cámara)
+        window.addEventListener('camera-error', function (error) {
+            const loadingScreen = document.getElementById('loading');
+            loadingScreen.innerHTML = `
+                <h2>Error de Cámara</h2>
+                <p>No se pudo acceder a la cámara. Por favor, asegúrate de dar permisos.</p>
+                <p style="font-size: 12px; color: #ccc;">${error}</p>
+            `;
+            loadingScreen.style.backgroundColor = '#cc0000';
+        });
+    </script>
+</body>
 </html>
