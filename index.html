@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IPN AR - Aniversario en el Cielo</title>
+    <!-- Cargamos A-Frame -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <!-- Cargamos AR.js para la funcionalidad de Realidad Aumentada -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      
+      <!-- ASSETS: Aquí puedes meter tus ilustraciones o modelos 3D -->
+      <a-assets>
+        <!-- Ejemplo: Un logo o engrane en PNG con transparencia -->
+        <img id="escudoIPN" src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Escudo_del_Instituto_Polit%C3%A9cnico_Nacional.png">
+      </a-assets>
+
+      <!-- ELEMENTOS EN EL CIELO -->
+      <!-- Usamos posiciones en 'y' elevadas (ej. 10 o 20) para que estén arriba -->
+      
+      <!-- Engrane rotando en el cenit -->
+      <a-image 
+        src="#escudoIPN" 
+        position="0 15 -10" 
+        rotation="-90 0 0" 
+        scale="5 5 5"
+        animation="property: rotation; to: -90 360 0; loop: true; dur: 10000; easing: linear">
+      </a-image>
+
+      <!-- Texto conmemorativo flotando -->
+      <a-entity
+        text="value: 90 ANIVERSARIO IPN; align: center; color: #660033; width: 20"
+        position="0 10 -15"
+        rotation="-45 0 0">
+      </a-entity>
+
+      <!-- Partículas o "estrellas" para dar ambiente -->
+      <a-sphere position="5 20 -5" radius="0.2" color="gold" animation="property: opacity; from: 1; to: 0; dir: alternate; loop: true"></a-sphere>
+      <a-sphere position="-8 18 -10" radius="0.3" color="white"></a-sphere>
+      <a-sphere position="2 25 5" radius="0.2" color="gold"></a-sphere>
+
+      <!-- Cámara del dispositivo -->
+      <a-entity camera></a-entity>
+      
+    </a-scene>
+  </body>
+</html>
